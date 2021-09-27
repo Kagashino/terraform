@@ -20,6 +20,7 @@ import (
 const (
 	PROVIDER_SECRET_ID  = "TENCENTCLOUD_SECRET_ID"
 	PROVIDER_SECRET_KEY = "TENCENTCLOUD_SECRET_KEY"
+	PROVIDER_SECURITY_TOKEN = "TENCENTCLOUD_SECURITY_TOKEN"
 	PROVIDER_REGION     = "TENCENTCLOUD_REGION"
 )
 
@@ -54,6 +55,13 @@ func New() backend.Backend {
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc(PROVIDER_SECRET_KEY, nil),
 				Description: "Secret key of Tencent Cloud",
+				Sensitive:   true,
+			},
+			"security_token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc(PROVIDER_SECURITY_TOKEN, nil),
+				Description: "Security Token of Tencent Cloud for temporary access credentials.",
 				Sensitive:   true,
 			},
 			"region": {
@@ -148,15 +156,17 @@ func (b *Backend) configure(ctx context.Context) error {
 		&http.Client{
 			Timeout: 60 * time.Second,
 			Transport: &cos.AuthorizationTransport{
-				SecretID:  data.Get("secret_id").(string),
-				SecretKey: data.Get("secret_key").(string),
+				SecretID:     data.Get("secret_id").(string),
+				SecretKey:    data.Get("secret_key").(string),
+				SessionToken: data.Get("security_token").(string),
 			},
 		},
 	)
 
-	credential := common.NewCredential(
+	credential := common.NewTokenCredential(
 		data.Get("secret_id").(string),
 		data.Get("secret_key").(string),
+		data.Get("security_token").(string),
 	)
 
 	cpf := profile.NewClientProfile()

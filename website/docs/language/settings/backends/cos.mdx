@@ -50,6 +50,7 @@ data "terraform_remote_state" "foo" {
 The following configuration options or environment variables are supported:
 
 - `secret_id` - (Optional) Secret id of Tencent Cloud. It supports environment variables `TENCENTCLOUD_SECRET_ID`.
+- `security_token` - (Optional) Security Token of Tencent Cloud for temporary access credentials. It supports environment variables `TENCENTCLOUD_SECURITY_TOKEN`.
 - `secret_key` - (Optional) Secret key of Tencent Cloud. It supports environment variables `TENCENTCLOUD_SECRET_KEY`.
 - `region` - (Optional) The region of the COS bucket. It supports environment variables `TENCENTCLOUD_REGION`.
 - `bucket` - (Required) The name of the COS bucket. You shall manually create it first.
